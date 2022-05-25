@@ -1,14 +1,14 @@
 // ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
-// const pullKey = "YOUR_PULL_KEY";
+const pullKey = "YOUR_PULL_KEY";
 // ! REPLACE WITH YOUR OWN FIREBASE CONFIG
-// const firebaseConfig = {
-//   apiKey: "qwety",
-//   authDomain: "qwerty",
-//   projectId: "qwerty",
-//   storageBucket: "qwerty",
-//   messagingSenderId: "qwerty",
-//   appId: "qwerty",
-// };
+const firebaseConfig = {
+  apiKey: "qwety",
+  authDomain: "qwerty",
+  projectId: "qwerty",
+  storageBucket: "qwerty",
+  messagingSenderId: "qwerty",
+  appId: "qwerty",
+};
 
 var app;
 var db;
