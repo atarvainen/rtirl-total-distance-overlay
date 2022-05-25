@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex: 1;
+  align-items: space-between;
+  justify-content: space-between;
+  padding: 8px;
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+}
+
+.meter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.value {
+  font-size: 24px;
+}
+
+.label {
+  font-size: 16px;
+  padding-top: 4px;
+}
+
+.unit {
+  padding-left: 6px;
+  font-size: 16px;
+}

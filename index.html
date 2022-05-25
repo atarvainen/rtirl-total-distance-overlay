@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="http://fonts.googleapis.com/css?family=Roboto"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://unpkg.com/@rtirl/api@latest/lib/index.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div style="height: 200px">
+      <div id="div1" class="container">
+        <div class="meter">
+          <div class="row">
+            <div id="total" class="value">0.0</div>
+            <div id="total" class="unit">km</div>
+          </div>
+          <div class="label">total</div>
+        </div>
+        <div class="meter">
+          <div class="row">
+            <div id="today" class="value">0.0</div>
+            <div id="total" class="unit">km</div>
+          </div>
+
+          <div class="label">today</div>
+        </div>
+        <div class="meter">
+          <div class="row">
+            <div id="speed" class="value">0.0</div>
+            <div id="total" class="unit">km/h</div>
+          </div>
+
+          <div class="label">speed</div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="script.js"></script>
+  </body>
+</html>
