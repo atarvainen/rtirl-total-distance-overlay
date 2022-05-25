@@ -180,5 +180,3 @@ window.addEventListener("onWidgetLoad", function (obj) {
     handleLocationChange(db, obj)
   );
 });
-
-window.dispatchEvent(new Event("onWidgetLoad"));
