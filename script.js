@@ -1,13 +1,14 @@
-const pullKey = "YOUR_PULL_KEY";
+// ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
+// const pullKey = "YOUR_PULL_KEY";
 // ! REPLACE WITH YOUR OWN FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey: "qwety",
-  authDomain: "qwerty",
-  projectId: "qwerty",
-  storageBucket: "qwerty",
-  messagingSenderId: "qwerty",
-  appId: "qwerty",
-};
+// const firebaseConfig = {
+//   apiKey: "qwety",
+//   authDomain: "qwerty",
+//   projectId: "qwerty",
+//   storageBucket: "qwerty",
+//   messagingSenderId: "qwerty",
+//   appId: "qwerty",
+// };
 
 var app;
 var db;
@@ -82,11 +83,8 @@ function handleLocationChange(db, location) {
       gps.old.longitude
     );
 
-    updateDb(
-      db,
-      delta,
-      (delta * 1000) / ((gps.new.time - gps.old.time) / 1000)
-    );
+    const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+    updateDb(db, delta, _speed < 70 ? _speed : 0.0);
   }
   //shifting new points to old for next update
   gps.old.latitude = latitude;
