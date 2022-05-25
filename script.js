@@ -8,7 +8,7 @@ const firebaseConfig = {
   storageBucket: "qwerty",
   messagingSenderId: "qwerty",
   appId: "qwerty",
-// };
+};
 
 var app;
 var db;
