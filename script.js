@@ -14,7 +14,11 @@ var app;
 var db;
 
 var rightNow = new Date();
-const currentDateId = rightNow.toISOString().slice(0, 10).replace(/-/g, "");
+var currentDateId;
+if (rightNow.getHours() < 4) {
+  rightNow.setDate(rightNow.getDate() - 1);
+}
+currentDateId = `${rightNow.getFullYear()}_${rightNow.getMonth()}_${rightNow.getDate()}`;
 
 var gps = {
   old: { time: rightNow.getTime(), latitude: 0.0, longitude: 0.0 },
