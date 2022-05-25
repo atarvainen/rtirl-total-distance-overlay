@@ -4,7 +4,7 @@ Custom overlay for RealtimeIRL total distance, daily distance and speed
 
 ## Adding RealtimeIRL as a StreamElements overlay
 
-Add a custom widget and add content from index.html in the html, styles.css in css, script.js in js, and fields.json in fields sections.
+Add a custom widget, open editor from the widgets settings and add copy content from index.html to the html section, styles.css to css section, script.js to js section, and fields.json to fields section.
 
 Replace ```js pullKey``` in the widget js section with your own RealtimeIRL pull key.
 
