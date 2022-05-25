@@ -15,7 +15,8 @@ var db;
 
 var rightNow = new Date();
 var currentDateId;
-if (rightNow.getHours() < 4) {
+var sameDayUntilHour = 4; // Change if you want to use the same day until for example 4am
+if (rightNow.getHours() < sameDayUntil) {
   rightNow.setDate(rightNow.getDate() - 1);
 }
 currentDateId = `${rightNow.getFullYear()}_${rightNow.getMonth()}_${rightNow.getDate()}`;
