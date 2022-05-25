@@ -13,6 +13,7 @@ const firebaseConfig = {
 var app;
 var db;
 
+var speedTimeout;
 var rightNow = new Date();
 var currentDateId;
 var sameDayUntilHour = 4; // Change if you want to use the same day until for example 4am
@@ -69,6 +70,7 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
 }
 
 function handleLocationChange(db, location) {
+  clearTimeout(speedTimeout);
   const { latitude, longitude } = location;
   gps.new.time = new Date().getTime();
   gps.new.latitude = latitude;
@@ -90,6 +92,7 @@ function handleLocationChange(db, location) {
 
     const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
     updateDb(db, delta, _speed < 70 ? _speed : 0.0);
+    speedTimeout = setTimeout(() => updateDb(db, 0, 0.0), 2000);
   }
   //shifting new points to old for next update
   gps.old.latitude = latitude;
