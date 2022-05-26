@@ -1,18 +1,15 @@
 .container {
   display: flex;
   flex: 1;
-  align-items: space-between;
   justify-content: space-between;
-  padding: 8px;
-  height: 100%;
-  font-family: "Roboto", sans-serif;
+  background-color: {{backgroundColor}};
+  font-family: '{{fontName}}', sans-serif;
+  padding: {{containerPadding}}px;
 }
 
 .meter {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
 }
 
 .row {
@@ -21,15 +18,24 @@
 }
 
 .value {
-  font-size: 24px;
+  font-size: {{valueFontSize}}px !important;
+  font-weight: {{valueFontWeight}} !important;
+  color: {{textColor}} !important;
+  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
 }
 
 .label {
-  font-size: 16px;
-  padding-top: 4px;
+  padding-top: {{labelTopPadding}}px;
+  font-size: {{labelFontSize}}px !important;
+  font-weight: {{labelFontWeight}} !important;
+  color: {{textColor}} !important;
+  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
 }
 
 .unit {
-  padding-left: 6px;
-  font-size: 16px;
+  padding-left: {{unitLeftPadding}}px;
+  font-size: {{unitFontSize}}px !important;
+  font-weight: {{unitFontWeight}} !important;
+  color: {{textColor}} !important;
+  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
 }

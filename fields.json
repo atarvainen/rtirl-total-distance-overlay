@@ -19,6 +19,32 @@
     "label": "Select a font:",
     "value": "Roboto"
   },
+  "textColor": {
+    "type": "colorpicker",
+    "label": "Text color",
+    "value": "#FFFFFF"
+  },
+  "horizontalTextShadow": {
+    "type": "number",
+    "label": "Horizontal text shadow size",
+    "value": 2,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "verticalTextShadow": {
+    "type": "number",
+    "label": "Vertical text shadow size",
+    "value": 2,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "textShadowColor": {
+    "type": "colorpicker",
+    "label": "Text shadow color",
+    "value": "#000000"
+  },
   "valueFontSize": {
     "type": "number",
     "label": "Value font size",
