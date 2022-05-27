@@ -5,7 +5,7 @@
   "default": "index.html",
   "scripts": {
     "serve": "yarn parcel index.html --no-cache",
-    "build": "yarn parcel build index.html"
+    "build": "yarn parcel build index.html --no-cache"
   },
   "author": "",
   "license": "UNLICENCED",
