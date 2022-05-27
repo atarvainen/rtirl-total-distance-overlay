@@ -2,9 +2,10 @@
   "name": "rtirl-overlay",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "default": "index.html",
   "scripts": {
-    "serve": "yarn parcel index.html"
+    "serve": "yarn parcel index.html",
+    "build": "yarn parcel build index.html"
   },
   "author": "",
   "license": "UNLICENCED",
