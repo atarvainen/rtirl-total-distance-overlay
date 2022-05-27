@@ -2,7 +2,7 @@
   display: flex;
   flex: 1;
   justify-content: space-between;
-  background-color: #595959;
+  background-color: rgba(218, 107, 164, 0.4);
   font-family: "Roboto", sans-serif;
   padding: 16px;
 }
@@ -33,6 +33,7 @@
 }
 
 .unit {
+  padding-left: 6px;
   font-size: 16px !important;
   font-weight: 400 !important;
   color: #fff !important;

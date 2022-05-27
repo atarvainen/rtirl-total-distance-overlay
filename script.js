@@ -82,44 +82,56 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
 
 function handleLocationChange(db, location) {
   clearTimeout(speedTimeout);
-  console.log("handleLocationChange1", new Date().toString(), location);
-  const { latitude, longitude } = location;
-  gps.new.time = new Date().getTime();
-  gps.new.latitude = latitude;
-  gps.new.longitude = longitude;
+  console.log(
+    "handleLocationChange1",
+    pullKey,
+    new Date().toString(),
+    location
+  );
+  if (location) {
+    const { latitude, longitude } = location;
+    gps.new.time = new Date().getTime();
+    gps.new.latitude = latitude;
+    gps.new.longitude = longitude;
 
-  if (
-    gps.new.latitude &&
-    gps.new.longitude &&
-    gps.old.latitude &&
-    gps.old.longitude
-  ) {
-    // We have new gps points. Let's calculate the delta distance using previously saved gps points.
-    const delta = distanceInKmBetweenEarthCoordinates(
-      gps.new.latitude,
-      gps.new.longitude,
-      gps.old.latitude,
+    if (
+      gps.new.latitude &&
+      gps.new.longitude &&
+      gps.old.latitude &&
       gps.old.longitude
-    );
+    ) {
+      // We have new gps points. Let's calculate the delta distance using previously saved gps points.
+      const delta = distanceInKmBetweenEarthCoordinates(
+        gps.new.latitude,
+        gps.new.longitude,
+        gps.old.latitude,
+        gps.old.longitude
+      );
 
-    const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
-    console.log("handleLocationChange2", new Date().toString(), delta, _speed);
-    updateDb(db, delta, _speed < 70 ? _speed : 0.0);
-    speedTimeout = setTimeout(
-      () => updateDb(db, 0, 0.0),
-      speedTimeoutInMilliSeconds
-    );
+      const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+      console.log(
+        "handleLocationChange2",
+        new Date().toString(),
+        delta,
+        _speed
+      );
+      updateDb(db, delta, _speed < 70 ? _speed : 0.0);
+      speedTimeout = setTimeout(
+        () => updateDb(db, 0, 0.0),
+        speedTimeoutInMilliSeconds
+      );
+    }
+    //shifting new points to old for next update
+    gps.old.latitude = latitude;
+    gps.old.longitude = longitude;
+    gps.old.time = gps.new.time;
+    // Note that because of GPS drift, different gps points will keep comming even if
+    // the subject is stationary. Each new gps point will be considered as subject is moving
+    // and it will get added to the total distance. Each addition will be tiny but it will
+    // addup over time and can become visible. So, at the end the shown distance might look
+    // sligtly more than expected.
+    // }
   }
-  //shifting new points to old for next update
-  gps.old.latitude = latitude;
-  gps.old.longitude = longitude;
-  gps.old.time = gps.new.time;
-  // Note that because of GPS drift, different gps points will keep comming even if
-  // the subject is stationary. Each new gps point will be considered as subject is moving
-  // and it will get added to the total distance. Each addition will be tiny but it will
-  // addup over time and can become visible. So, at the end the shown distance might look
-  // sligtly more than expected.
-  // }
 }
 
 function createTodaysObj(db) {

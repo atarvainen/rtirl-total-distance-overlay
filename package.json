@@ -4,7 +4,7 @@
   "description": "",
   "default": "index.html",
   "scripts": {
-    "serve": "yarn parcel index.html",
+    "serve": "yarn parcel index.html --no-cache",
     "build": "yarn parcel build index.html"
   },
   "author": "",
