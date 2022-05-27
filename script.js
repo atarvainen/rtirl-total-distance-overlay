@@ -1,19 +1,30 @@
-// ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
-const pullKey = "YOUR_PULL_KEY";
-// ! REPLACE WITH YOUR OWN FIREBASE CONFIG
+const pullKey = new URLSearchParams(window.location.search).get("key");
 const firebaseConfig = {
-  apiKey: "qwety",
-  authDomain: "qwerty",
-  projectId: "qwerty",
-  storageBucket: "qwerty",
-  messagingSenderId: "qwerty",
-  appId: "qwerty",
+  apiKey: "AIzaSyDsylF5lkq6rer_h8h85zKtNe95aogfans",
+  authDomain: "rtirl-total-distance-overlay.firebaseapp.com",
+  projectId: "rtirl-total-distance-overlay",
+  storageBucket: "rtirl-total-distance-overlay.appspot.com",
+  messagingSenderId: "380641450848",
+  appId: "1:380641450848:web:61ca9f8f8662ee20f45c05",
 };
+
+// // ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
+// const pullKey = "YOUR_PULL_KEY";
+// // ! REPLACE WITH YOUR OWN FIREBASE CONFIG
+// const firebaseConfig = {
+//   apiKey: "qwety",
+//   authDomain: "qwerty",
+//   projectId: "qwerty",
+//   storageBucket: "qwerty",
+//   messagingSenderId: "qwerty",
+//   appId: "qwerty",
+// };
 
 var app;
 var db;
 
 var speedTimeout;
+var speedTimeoutInMilliSeconds = 5000;
 var rightNow = new Date();
 var currentDateId;
 var sameDayUntilHour = 4; // Change if you want to use the same day until for example 4am
@@ -71,6 +82,7 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
 
 function handleLocationChange(db, location) {
   clearTimeout(speedTimeout);
+  console.log("handleLocationChange1", new Date().toString(), location);
   const { latitude, longitude } = location;
   gps.new.time = new Date().getTime();
   gps.new.latitude = latitude;
@@ -91,8 +103,12 @@ function handleLocationChange(db, location) {
     );
 
     const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+    console.log("handleLocationChange2", new Date().toString(), delta, _speed);
     updateDb(db, delta, _speed < 70 ? _speed : 0.0);
-    speedTimeout = setTimeout(() => updateDb(db, 0, 0.0), 2000);
+    speedTimeout = setTimeout(
+      () => updateDb(db, 0, 0.0),
+      speedTimeoutInMilliSeconds
+    );
   }
   //shifting new points to old for next update
   gps.old.latitude = latitude;
@@ -186,3 +202,5 @@ window.addEventListener("onWidgetLoad", function (obj) {
     handleLocationChange(db, obj)
   );
 });
+
+window.dispatchEvent(new Event("onWidgetLoad"));

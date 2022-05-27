@@ -2,9 +2,9 @@
   display: flex;
   flex: 1;
   justify-content: space-between;
-  background-color: {{backgroundColor}};
-  font-family: '{{fontName}}', sans-serif;
-  padding: {{containerPadding}}px;
+  background-color: #595959;
+  font-family: "Roboto", sans-serif;
+  padding: 16px;
 }
 
 .meter {
@@ -18,24 +18,23 @@
 }
 
 .value {
-  font-size: {{valueFontSize}}px !important;
-  font-weight: {{valueFontWeight}} !important;
-  color: {{textColor}} !important;
-  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
+  font-size: 24px !important;
+  font-weight: 400 !important;
+  color: #fff !important;
+  text-shadow: 2px 2px #000;
 }
 
 .label {
-  padding-top: {{labelTopPadding}}px;
-  font-size: {{labelFontSize}}px !important;
-  font-weight: {{labelFontWeight}} !important;
-  color: {{textColor}} !important;
-  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
+  padding-top: 16px;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  text-shadow: 2px 2px #000;
 }
 
 .unit {
-  padding-left: {{unitLeftPadding}}px;
-  font-size: {{unitFontSize}}px !important;
-  font-weight: {{unitFontWeight}} !important;
-  color: {{textColor}} !important;
-  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  color: #fff !important;
+  text-shadow: 2px 2px #000;
 }

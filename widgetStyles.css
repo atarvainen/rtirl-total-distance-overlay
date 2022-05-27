@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  background-color: {{backgroundColor}};
+  font-family: '{{fontName}}', sans-serif;
+  padding: {{containerPadding}}px;
+}
+
+.meter {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.value {
+  font-size: {{valueFontSize}}px !important;
+  font-weight: {{valueFontWeight}} !important;
+  color: {{textColor}} !important;
+  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
+}
+
+.label {
+  padding-top: {{labelTopPadding}}px;
+  font-size: {{labelFontSize}}px !important;
+  font-weight: {{labelFontWeight}} !important;
+  color: {{textColor}} !important;
+  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
+}
+
+.unit {
+  padding-left: {{unitLeftPadding}}px;
+  font-size: {{unitFontSize}}px !important;
+  font-weight: {{unitFontWeight}} !important;
+  color: {{textColor}} !important;
+  text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
+}
