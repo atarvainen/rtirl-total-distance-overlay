@@ -82,12 +82,6 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
 
 function handleLocationChange(db, location) {
   clearTimeout(speedTimeout);
-  console.log(
-    "handleLocationChange1",
-    pullKey,
-    new Date().toString(),
-    location
-  );
   if (location) {
     const { latitude, longitude } = location;
     gps.new.time = new Date().getTime();
@@ -109,13 +103,7 @@ function handleLocationChange(db, location) {
       );
 
       const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
-      console.log(
-        "handleLocationChange2",
-        new Date().toString(),
-        delta,
-        _speed
-      );
-      updateDb(db, delta, _speed < 70 ? _speed : 0.0);
+      updateDb(db, delta < 10 ? delta : 0, _speed < 70 ? _speed : 0.0);
       speedTimeout = setTimeout(
         () => updateDb(db, 0, 0.0),
         speedTimeoutInMilliSeconds
@@ -214,5 +202,4 @@ window.addEventListener("onWidgetLoad", function (obj) {
     handleLocationChange(db, obj)
   );
 });
-
 window.dispatchEvent(new Event("onWidgetLoad"));
