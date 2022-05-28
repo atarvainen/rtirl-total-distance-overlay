@@ -1,30 +1,20 @@
-const pullKey = new URLSearchParams(window.location.search).get("key");
+// ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
+const pullKey = "YOUR_PULL_KEY";
+// ! REPLACE WITH YOUR OWN FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "AIzaSyDsylF5lkq6rer_h8h85zKtNe95aogfans",
-  authDomain: "rtirl-total-distance-overlay.firebaseapp.com",
-  projectId: "rtirl-total-distance-overlay",
-  storageBucket: "rtirl-total-distance-overlay.appspot.com",
-  messagingSenderId: "380641450848",
-  appId: "1:380641450848:web:61ca9f8f8662ee20f45c05",
+  apiKey: "qwety",
+  authDomain: "qwerty",
+  projectId: "qwerty",
+  storageBucket: "qwerty",
+  messagingSenderId: "qwerty",
+  appId: "qwerty",
 };
-
-// // ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
-// const pullKey = "YOUR_PULL_KEY";
-// // ! REPLACE WITH YOUR OWN FIREBASE CONFIG
-// const firebaseConfig = {
-//   apiKey: "qwety",
-//   authDomain: "qwerty",
-//   projectId: "qwerty",
-//   storageBucket: "qwerty",
-//   messagingSenderId: "qwerty",
-//   appId: "qwerty",
-// };
 
 var app;
 var db;
 
 var speedTimeout;
-var speedTimeoutInMilliSeconds = 7000;
+var speedTimeoutInMilliSeconds = 5000;
 var rightNow = new Date();
 var currentDateId;
 var sameDayUntilHour = 4; // Change if you want to use the same day until for example 4am
@@ -113,11 +103,12 @@ function handleLocationChange(db, location) {
     gps.old.latitude = latitude;
     gps.old.longitude = longitude;
     gps.old.time = gps.new.time;
-    // Note that because of GPS drift, different gps points will keep coming even if
+    // Note that because of GPS drift, different gps points will keep comming even if
     // the subject is stationary. Each new gps point will be considered as subject is moving
     // and it will get added to the total distance. Each addition will be tiny but it will
     // addup over time and can become visible. So, at the end the shown distance might look
     // sligtly more than expected.
+    // }
   }
 }
 
@@ -184,7 +175,7 @@ function addTotalListener(db) {
     );
 }
 
-function start() {
+window.addEventListener("onWidgetLoad", function (obj) {
   app = firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
@@ -194,6 +185,4 @@ function start() {
   RealtimeIRL.forPullKey(pullKey).addLocationListener((obj) =>
     handleLocationChange(db, obj)
   );
-}
-
-start();
+});
