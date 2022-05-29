@@ -32,27 +32,39 @@ var gps = {
   new: { latitude: 0.0, longitude: 0.0 },
 };
 
-function createTodaysObj() {
+function setTodaysObj(merge) {
   return totaldb
     .collection("distances")
     .doc(pullKey + "_" + currentDateId)
     .set(
       { date: firebase.firestore.Timestamp.fromDate(new Date()) },
-      { merge: true }
+      { merge: merge }
     );
 }
 
-function createTotalObj() {
+function setTotalObj(merge) {
   return totaldb
     .collection("distances")
     .doc(pullKey)
     .set(
       { date: firebase.firestore.Timestamp.fromDate(new Date()) },
-      { merge: true }
+      { merge: merge }
     );
 }
 
-function updateDb(distance, speed) {
+async function resetTotal() {
+  await setTotalObj(false);
+  total = 0.0;
+  document.getElementById("total").innerText = total;
+}
+
+async function resetToday() {
+  await setTodaysObj(false);
+  today = 0.0;
+  document.getElementById("today").innerText = today;
+}
+
+function updateDb(distance) {
   var batch = totaldb.batch();
 
   var todayRef = totaldb
@@ -61,7 +73,6 @@ function updateDb(distance, speed) {
   batch.update(todayRef, {
     date: firebase.firestore.Timestamp.fromDate(new Date()),
     distance: firebase.firestore.FieldValue.increment(distance),
-    speed: speed,
   });
 
   var totalRef = totaldb.collection("distances").doc(pullKey);
@@ -130,11 +141,10 @@ function handleLocationChange(location) {
       document.getElementById("total").innerText = total.toFixed(1);
 
       // update db
-      updateDb(delta < 10 ? delta : 0, _speed);
+      updateDb(delta < 10 ? delta : 0);
 
       // after timeout if locations stop coming, set speed to 0
       speedTimeout = setTimeout(() => {
-        updateDb(0, 0.0);
         document.getElementById("speed").innerText = 0.0;
       }, speedTimeoutInMilliSeconds);
     }
@@ -166,8 +176,8 @@ async function start() {
   totaldb = firebase.firestore();
 
   // create objects if they don't exist
-  await createTodaysObj();
-  await createTotalObj();
+  await setTodaysObj(true);
+  await setTotalObj(true);
 
   // get total
   await totaldb
@@ -216,3 +226,13 @@ async function start() {
 }
 
 window.addEventListener("onWidgetLoad", start);
+
+window.addEventListener("onEventReceived", function (obj) {
+  if (obj.detail.event.listener === "widget-button") {
+    if (obj.detail.event.field === "resetTotalButton") {
+      resetTotal();
+    } else if (obj.detail.event.field === "resetTodayButton") {
+      resetToday();
+    }
+  }
+});

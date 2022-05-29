@@ -1,4 +1,14 @@
 {
+  "resetTotalButton": {
+    "type": "button",
+    "label": "Reset total",
+    "value": "resetTotalButton"
+  },
+  "resetTodayButton": {
+    "type": "button",
+    "label": "Reset today",
+    "value": "resetTodayButton"
+  },
   "totalLabel": {
     "type": "text",
     "label": "Label for total distance",
