@@ -28,7 +28,7 @@ Create a Cloud Firestore and replace the `firebaseConfig` in widget js with your
 
 ![image](https://user-images.githubusercontent.com/33045386/170848080-2beabff9-32e1-4117-9c8b-fec91bcfa15d.png)
 
-Consult a tutorial if you're unfamiliar with firebase. E.g. [https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25](https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25)
+Consult a tutorial if you're unfamiliar with firebase e.g. [https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25](https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25)
 
 ## Customization
 
