@@ -20,8 +20,6 @@ Replace `pullKey` in the widget js section with your own RealtimeIRL pull key.
 
 ![image](https://user-images.githubusercontent.com/33045386/170848061-c160c46a-2efd-4c35-aef0-44f15c9058cd.png)
 
-e.g.
-
 ![image](https://user-images.githubusercontent.com/33045386/170848075-9dfc9014-e21c-4103-b8ad-44bd458a7866.png)
 
 
