@@ -2,7 +2,7 @@
 
 Custom overlay for RealtimeIRL total distance, daily distance and speed.
 
-## Adding RealtimeIRL as a StreamElements overlay
+## Adding as a StreamElements overlay
 
 ### 1. Add a Custom widget
 ![image](https://user-images.githubusercontent.com/33045386/170847810-955cc295-b973-4cbf-a2b3-e746b55a7c12.png)
