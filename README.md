@@ -18,8 +18,19 @@ Custom overlay for RealtimeIRL total distance, daily distance and speed.
 ### 4. Add your pull key
 Replace `pullKey` in the widget js section with your own RealtimeIRL pull key.
 
+![image](https://user-images.githubusercontent.com/33045386/170848061-c160c46a-2efd-4c35-aef0-44f15c9058cd.png)
+
+e.g.
+
+![image](https://user-images.githubusercontent.com/33045386/170848075-9dfc9014-e21c-4103-b8ad-44bd458a7866.png)
+
+
 ### 5. Create a Cloud Firestore
-Create a Cloud Firestore and replace the `firebaseConfig` in widget js with your own config. Consult a tutorial if you're unfamiliar with firebase. E.g. [https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25](https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25)
+Create a Cloud Firestore and replace the `firebaseConfig` in widget js with your own config.
+
+![image](https://user-images.githubusercontent.com/33045386/170848080-2beabff9-32e1-4117-9c8b-fec91bcfa15d.png)
+
+Consult a tutorial if you're unfamiliar with firebase. E.g. [https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25](https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25)
 
 ## Customization
 
