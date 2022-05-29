@@ -119,7 +119,8 @@ function handleLocationChange(location) {
       );
 
       // update variables
-      const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+      let _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+      _speed = _speed < 70 ? _speed : 0.0;
       total += delta;
       today += delta;
 
@@ -129,7 +130,7 @@ function handleLocationChange(location) {
       document.getElementById("total").innerText = total.toFixed(1);
 
       // update db
-      updateDb(delta < 10 ? delta : 0, _speed < 70 ? _speed : 0.0);
+      updateDb(delta < 10 ? delta : 0, _speed);
 
       // after timeout if locations stop coming, set speed to 0
       speedTimeout = setTimeout(() => {
@@ -175,8 +176,11 @@ async function start() {
     .get()
     .then((doc) => {
       if (doc.exists) {
-        total = doc.data().distance;
-        document.getElementById("total").innerText = total.toFixed(1);
+        const _distance = doc.data().distance;
+        if (_distance) {
+          total = _distance;
+          document.getElementById("total").innerText = total.toFixed(1);
+        }
       }
     })
     .catch((error) => {});
@@ -188,8 +192,11 @@ async function start() {
     .get()
     .then((doc) => {
       if (doc.exists) {
-        today = doc.data().distance;
-        document.getElementById("today").innerText = today.toFixed(1);
+        const _distance = doc.data().distance;
+        if (_distance) {
+          today = _distance;
+          document.getElementById("today").innerText = today.toFixed(1);
+        }
       }
     })
     .catch((error) => {});
