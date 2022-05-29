@@ -20,3 +20,8 @@ Replace `pullKey` in the widget js section with your own RealtimeIRL pull key.
 
 ### 5. Create a Cloud Firestore
 Create a Cloud Firestore and replace the `firebaseConfig` in widget js with your own config. Consult a tutorial if you're unfamiliar with firebase. E.g. [https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25](https://dev.to/napoleon039/how-to-create-a-new-firestore-database-4o25)
+
+## Customization
+
+Use the provided customization options in the Streamelements settings panel. For more advanced customization edit the css section.
+
