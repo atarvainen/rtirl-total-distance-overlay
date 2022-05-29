@@ -123,7 +123,7 @@
   "backgroundColor": {
     "type": "colorpicker",
     "label": "Background color",
-    "value": "#0000FF"
+    "value": "#a8568066"
   },
   "containerPadding": {
     "type": "number",

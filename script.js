@@ -8,23 +8,15 @@ const firebaseConfig = {
   appId: "1:380641450848:web:61ca9f8f8662ee20f45c05",
 };
 
-// // ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
-// const pullKey = "YOUR_PULL_KEY";
-// // ! REPLACE WITH YOUR OWN FIREBASE CONFIG
-// const firebaseConfig = {
-//   apiKey: "qwety",
-//   authDomain: "qwerty",
-//   projectId: "qwerty",
-//   storageBucket: "qwerty",
-//   messagingSenderId: "qwerty",
-//   appId: "qwerty",
-// };
-
+var totalApp;
+var totaldb;
 var app;
-var db;
+
+var total = 0.0;
+var today = 0.0;
 
 var speedTimeout;
-var speedTimeoutInMilliSeconds = 7000;
+var speedTimeoutInMilliSeconds = 7000; // timeout to set speed to 0
 var rightNow = new Date();
 var currentDateId;
 var sameDayUntilHour = 4; // Change if you want to use the same day until for example 4am
@@ -38,17 +30,39 @@ var gps = {
   new: { latitude: 0.0, longitude: 0.0 },
 };
 
-function updateDb(db, distance, speed) {
-  var batch = db.batch();
+function createTodaysObj() {
+  return totaldb
+    .collection("distances")
+    .doc(pullKey + "_" + currentDateId)
+    .set(
+      { date: firebase.firestore.Timestamp.fromDate(new Date()) },
+      { merge: true }
+    );
+}
 
-  var todayRef = db.collection("distances").doc(pullKey + "_" + currentDateId);
+function createTotalObj() {
+  return totaldb
+    .collection("distances")
+    .doc(pullKey)
+    .set(
+      { date: firebase.firestore.Timestamp.fromDate(new Date()) },
+      { merge: true }
+    );
+}
+
+function updateDb(distance, speed) {
+  var batch = totaldb.batch();
+
+  var todayRef = totaldb
+    .collection("distances")
+    .doc(pullKey + "_" + currentDateId);
   batch.update(todayRef, {
     date: firebase.firestore.Timestamp.fromDate(new Date()),
     distance: firebase.firestore.FieldValue.increment(distance),
     speed: speed,
   });
 
-  var totalRef = db.collection("distances").doc(pullKey);
+  var totalRef = totaldb.collection("distances").doc(pullKey);
   batch.update(totalRef, {
     distance: firebase.firestore.FieldValue.increment(distance),
   });
@@ -80,7 +94,7 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
   return earthRadiusKm * c;
 }
 
-function handleLocationChange(db, location) {
+function handleLocationChange(location) {
   clearTimeout(speedTimeout);
   if (location) {
     const { latitude, longitude } = location;
@@ -102,98 +116,95 @@ function handleLocationChange(db, location) {
         gps.old.longitude
       );
 
+      // update variables
       const _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
-      updateDb(db, delta < 10 ? delta : 0, _speed < 70 ? _speed : 0.0);
-      speedTimeout = setTimeout(
-        () => updateDb(db, 0, 0.0),
-        speedTimeoutInMilliSeconds
-      );
+      total += delta;
+      today += delta;
+
+      // update html
+      document.getElementById("speed").innerText = _speed.toFixed(1);
+      document.getElementById("today").innerText = today.toFixed(1);
+      document.getElementById("total").innerText = total.toFixed(1);
+
+      // update db
+      updateDb(delta < 10 ? delta : 0, _speed < 70 ? _speed : 0.0);
+
+      // after timeout if locations stop coming, set speed to 0
+      speedTimeout = setTimeout(() => {
+        updateDb(0, 0.0);
+        document.getElementById("speed").innerText = 0.0;
+      }, speedTimeoutInMilliSeconds);
     }
     //shifting new points to old for next update
     gps.old.latitude = latitude;
     gps.old.longitude = longitude;
     gps.old.time = gps.new.time;
-    // Note that because of GPS drift, different gps points will keep coming even if
-    // the subject is stationary. Each new gps point will be considered as subject is moving
-    // and it will get added to the total distance. Each addition will be tiny but it will
-    // addup over time and can become visible. So, at the end the shown distance might look
-    // sligtly more than expected.
   }
 }
 
-function createTodaysObj(db) {
-  db.collection("distances")
-    .doc(pullKey + "_" + currentDateId)
-    .set(
-      { date: firebase.firestore.Timestamp.fromDate(new Date()) },
-      { merge: true }
-    )
-    .then(() => addTodayListener(db));
+function addLocationListener(callback) {
+  return addListener("location", callback);
 }
 
-function addTodayListener(db) {
-  db.collection("distances")
-    .doc(pullKey + "_" + currentDateId)
-    .onSnapshot(
-      (doc) => {
-        const data = doc.data();
-        if (!data) {
-          createTodaysObj(db);
-          return;
-        }
-        if (data.speed !== undefined && data.speed !== null) {
-          document.getElementById("speed").innerText = data.speed.toFixed(1);
-        }
-        if (data.distance !== undefined && data.distance !== null) {
-          document.getElementById("today").innerText = data.distance.toFixed(1);
-        }
-      },
-      (error) => {
-        createTodaysObj();
-      }
-    );
+function addListener(type, callback) {
+  return app
+    .database()
+    .ref()
+    .child("pullables")
+    .child(pullKey)
+    .child(type)
+    .on("value", function (snapshot) {
+      callback(snapshot.val());
+    });
 }
 
-function createTotalObj(db) {
-  db.collection("distances")
+async function start() {
+  totalApp = firebase.initializeApp(firebaseConfig);
+  totaldb = firebase.firestore();
+
+  // create objects if they don't exist
+  await createTodaysObj();
+  await createTotalObj();
+
+  // get total
+  await totaldb
+    .collection("distances")
     .doc(pullKey)
-    .set(
-      { date: firebase.firestore.Timestamp.fromDate(new Date()) },
-      { merge: true }
-    )
-    .then(() => addTotalListener(db));
-}
-
-function addTotalListener(db) {
-  db.collection("distances")
-    .doc(pullKey)
-    .onSnapshot(
-      (doc) => {
-        const data = doc.data();
-        if (!data) {
-          createTotalObj(db);
-          return;
-        }
-        if (data.distance !== undefined && data.distance !== null) {
-          document.getElementById("total").innerText = data.distance.toFixed(1);
-        }
-      },
-      (error) => {
-        createTotalObj(db);
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        total = doc.data().distance;
+        document.getElementById("total").innerText = total.toFixed(1);
       }
-    );
-}
+    })
+    .catch((error) => {});
 
-function start() {
-  app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  // get daily
+  await totaldb
+    .collection("distances")
+    .doc(pullKey + "_" + currentDateId)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        today = doc.data().distance;
+        document.getElementById("today").innerText = today.toFixed(1);
+      }
+    })
+    .catch((error) => {});
 
-  addTodayListener(db);
-  addTotalListener(db);
-
-  RealtimeIRL.forPullKey(pullKey).addLocationListener((obj) =>
-    handleLocationChange(db, obj)
+  // init rtirl firebase
+  firebase.database.INTERNAL.forceWebSockets();
+  app = firebase.initializeApp(
+    {
+      apiKey: "AIzaSyC4L8ICZbJDufxe8bimRdB5cAulPCaYVQQ",
+      databaseURL: "https://rtirl-a1d7f-default-rtdb.firebaseio.com",
+      projectId: "rtirl-a1d7f",
+      appId: "1:684852107701:web:d77a8ed0ee5095279a61fc",
+    },
+    "rtirl-api"
   );
+
+  addLocationListener(handleLocationChange);
 }
 
 start();
