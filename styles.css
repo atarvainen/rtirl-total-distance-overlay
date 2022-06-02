@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex: 1;
-  background-color: rgba(168, 86, 128, 0.4);
+  background-color: #00000066;
   font-family: "Roboto", sans-serif;
   padding: 16px;
 }
