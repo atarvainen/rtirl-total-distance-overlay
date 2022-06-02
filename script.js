@@ -1,4 +1,6 @@
+// ! REPLACE WITH YOUR OWN REALTIME IRL PULL KEY
 const pullKey = new URLSearchParams(window.location.search).get("key");
+// ! REPLACE WITH YOUR OWN FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDsylF5lkq6rer_h8h85zKtNe95aogfans",
   authDomain: "rtirl-total-distance-overlay.firebaseapp.com",
@@ -30,27 +32,39 @@ var gps = {
   new: { latitude: 0.0, longitude: 0.0 },
 };
 
-function createTodaysObj() {
+function setTodaysObj(merge) {
   return totaldb
     .collection("distances")
     .doc(pullKey + "_" + currentDateId)
     .set(
       { date: firebase.firestore.Timestamp.fromDate(new Date()) },
-      { merge: true }
+      { merge: merge }
     );
 }
 
-function createTotalObj() {
+function setTotalObj(merge) {
   return totaldb
     .collection("distances")
     .doc(pullKey)
     .set(
       { date: firebase.firestore.Timestamp.fromDate(new Date()) },
-      { merge: true }
+      { merge: merge }
     );
 }
 
-function updateDb(distance, speed) {
+async function resetTotal() {
+  await setTotalObj(false);
+  total = 0.0;
+  document.getElementById("total").innerText = total;
+}
+
+async function resetToday() {
+  await setTodaysObj(false);
+  today = 0.0;
+  document.getElementById("today").innerText = today;
+}
+
+function updateDb(distance) {
   var batch = totaldb.batch();
 
   var todayRef = totaldb
@@ -59,7 +73,6 @@ function updateDb(distance, speed) {
   batch.update(todayRef, {
     date: firebase.firestore.Timestamp.fromDate(new Date()),
     distance: firebase.firestore.FieldValue.increment(distance),
-    speed: speed,
   });
 
   var totalRef = totaldb.collection("distances").doc(pullKey);
@@ -94,11 +107,16 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
   return earthRadiusKm * c;
 }
 
-function handleLocationChange(location) {
+function handleLocationChange(obj) {
   clearTimeout(speedTimeout);
-  if (location) {
-    const { latitude, longitude } = location;
-    gps.new.time = new Date().getTime();
+
+  if (obj.altitude) {
+    document.getElementById("altitude").innerText = obj.altitude["EGM96"] | 0;
+  }
+
+  if (obj.location) {
+    const { latitude, longitude } = obj.location;
+    gps.new.time = obj.reportedAt;
     gps.new.latitude = latitude;
     gps.new.longitude = longitude;
 
@@ -116,59 +134,67 @@ function handleLocationChange(location) {
         gps.old.longitude
       );
 
-      // update variables
-      let _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
-      _speed = _speed < 70 ? _speed : 0.0;
-      total += delta;
-      today += delta;
+      if (delta < 10) {
+        // update variables
+        let _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+        _speed = _speed < 70 ? _speed : 0.0;
+        total += delta;
+        today += delta;
 
-      // update html
-      document.getElementById("speed").innerText = _speed.toFixed(1);
-      document.getElementById("today").innerText = today.toFixed(1);
-      document.getElementById("total").innerText = total.toFixed(1);
+        // update html
+        document.getElementById("speed").innerText = parseInt(_speed);
+        document.getElementById("today").innerText = today.toFixed(1);
+        document.getElementById("total").innerText = total.toFixed(1);
 
-      // update db
-      updateDb(delta < 10 ? delta : 0, _speed);
-
-      // update db
-      updateDb(delta < 10 ? delta : 0, _speed < 70 ? _speed : 0.0);
-
-      // after timeout if locations stop coming, set speed to 0
-      speedTimeout = setTimeout(() => {
-        updateDb(0, 0.0);
-        document.getElementById("speed").innerText = 0.0;
-      }, speedTimeoutInMilliSeconds);
+        // update db
+        updateDb(delta);
+      }
     }
     //shifting new points to old for next update
     gps.old.latitude = latitude;
     gps.old.longitude = longitude;
     gps.old.time = gps.new.time;
+
+    speedTimeout = setTimeout(() => {
+      document.getElementById("speed").innerText = 0.0;
+    }, speedTimeoutInMilliSeconds);
   }
 }
 
-function addLocationListener(callback) {
-  return addListener("location", callback);
+function handleStuff(obj) {
+  console.log("obj", obj);
 }
 
-function addListener(type, callback) {
+function addRTIRLListener(callback) {
   return app
     .database()
     .ref()
     .child("pullables")
     .child(pullKey)
-    .child(type)
     .on("value", function (snapshot) {
       callback(snapshot.val());
     });
 }
 
-async function start() {
+// function addListener(type, callback) {
+//   return app
+//     .database()
+//     .ref()
+//     .child("pullables")
+//     .child(pullKey)
+//     .child(type)
+//     .on("value", function (snapshot) {
+//       callback(snapshot.val());
+//     });
+// }
+
+async function start(obj) {
   totalApp = firebase.initializeApp(firebaseConfig);
   totaldb = firebase.firestore();
 
   // create objects if they don't exist
-  await createTodaysObj();
-  await createTotalObj();
+  await setTodaysObj(true);
+  await setTotalObj(true);
 
   // get total
   await totaldb
@@ -179,7 +205,7 @@ async function start() {
       if (doc.exists) {
         const _distance = doc.data().distance;
         if (_distance) {
-          total = doc.data().distance;
+          total = _distance;
           document.getElementById("total").innerText = total.toFixed(1);
         }
       }
@@ -195,14 +221,13 @@ async function start() {
       if (doc.exists) {
         const _distance = doc.data().distance;
         if (_distance) {
-          today = doc.data().distance;
+          today = _distance;
           document.getElementById("today").innerText = today.toFixed(1);
         }
       }
     })
     .catch((error) => {});
 
-  // init rtirl firebase
   firebase.database.INTERNAL.forceWebSockets();
   app = firebase.initializeApp(
     {
@@ -214,7 +239,7 @@ async function start() {
     "rtirl-api"
   );
 
-  addLocationListener(handleLocationChange);
+  addRTIRLListener(handleLocationChange);
 }
 
 start();

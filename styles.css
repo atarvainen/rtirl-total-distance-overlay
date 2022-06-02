@@ -1,13 +1,13 @@
 .container {
   display: flex;
   flex: 1;
-  justify-content: space-between;
   background-color: rgba(168, 86, 128, 0.4);
   font-family: "Roboto", sans-serif;
   padding: 16px;
 }
 
 .meter {
+  width: 130px;
   display: flex;
   flex-direction: column;
 }

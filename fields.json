@@ -9,6 +9,14 @@
     "label": "Reset today",
     "value": "resetTodayButton"
   },
+  "meterWidth": {
+    "type": "number",
+    "label": "Width for each meter",
+    "value": 130,
+    "min": 100,
+    "max": 400,
+    "step": 1
+  },
   "totalLabel": {
     "type": "text",
     "label": "Label for total distance",

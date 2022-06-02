@@ -1,13 +1,13 @@
 .container {
   display: flex;
   flex: 1;
-  justify-content: space-between;
   background-color: {{backgroundColor}};
   font-family: '{{fontName}}', sans-serif;
   padding: {{containerPadding}}px;
 }
 
 .meter {
+  width: {{meterWidth}}px;
   display: flex;
   flex-direction: column;
 }

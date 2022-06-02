@@ -107,11 +107,16 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
   return earthRadiusKm * c;
 }
 
-function handleLocationChange(location) {
+function handleLocationChange(obj) {
   clearTimeout(speedTimeout);
-  if (location) {
-    const { latitude, longitude } = location;
-    gps.new.time = new Date().getTime();
+
+  if (obj.altitude) {
+    document.getElementById("altitude").innerText = obj.altitude["EGM96"] | 0;
+  }
+
+  if (obj.location) {
+    const { latitude, longitude } = obj.location;
+    gps.new.time = obj.reportedAt;
     gps.new.latitude = latitude;
     gps.new.longitude = longitude;
 
@@ -129,49 +134,45 @@ function handleLocationChange(location) {
         gps.old.longitude
       );
 
-      // update variables
-      let _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
-      _speed = _speed < 70 ? _speed : 0.0;
-      total += delta;
-      today += delta;
+      if (delta < 10) {
+        // update variables
+        let _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+        _speed = _speed < 70 ? _speed : 0.0;
+        total += delta;
+        today += delta;
 
-      // update html
-      document.getElementById("speed").innerText = _speed.toFixed(1);
-      document.getElementById("today").innerText = today.toFixed(1);
-      document.getElementById("total").innerText = total.toFixed(1);
+        // update html
+        document.getElementById("speed").innerText = parseInt(_speed);
+        document.getElementById("today").innerText = today.toFixed(1);
+        document.getElementById("total").innerText = total.toFixed(1);
 
-      // update db
-      updateDb(delta < 10 ? delta : 0);
-
-      // after timeout if locations stop coming, set speed to 0
-      speedTimeout = setTimeout(() => {
-        document.getElementById("speed").innerText = 0.0;
-      }, speedTimeoutInMilliSeconds);
+        // update db
+        updateDb(delta);
+      }
     }
     //shifting new points to old for next update
     gps.old.latitude = latitude;
     gps.old.longitude = longitude;
     gps.old.time = gps.new.time;
+
+    speedTimeout = setTimeout(() => {
+      document.getElementById("speed").innerText = 0.0;
+    }, speedTimeoutInMilliSeconds);
   }
 }
 
-function addLocationListener(callback) {
-  return addListener("location", callback);
-}
-
-function addListener(type, callback) {
+function addRTIRLListener(callback) {
   return app
     .database()
     .ref()
     .child("pullables")
     .child(pullKey)
-    .child(type)
     .on("value", function (snapshot) {
       callback(snapshot.val());
     });
 }
 
-async function start() {
+async function start(obj) {
   totalApp = firebase.initializeApp(firebaseConfig);
   totaldb = firebase.firestore();
 
@@ -222,7 +223,7 @@ async function start() {
     "rtirl-api"
   );
 
-  addLocationListener(handleLocationChange);
+  addRTIRLListener(handleLocationChange);
 }
 
 window.addEventListener("onWidgetLoad", start);

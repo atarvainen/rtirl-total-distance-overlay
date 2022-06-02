@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto"
-      rel="stylesheet"
-      type="text/css"
-    />
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -21,6 +16,7 @@
           </div>
           <div class="label">total</div>
         </div>
+
         <div class="meter">
           <div class="row">
             <div id="today" class="value">0.0</div>
@@ -29,6 +25,7 @@
 
           <div class="label">today</div>
         </div>
+
         <div class="meter">
           <div class="row">
             <div id="speed" class="value">0.0</div>
@@ -36,6 +33,15 @@
           </div>
 
           <div class="label">speed</div>
+        </div>
+
+        <div class="meter">
+          <div class="row">
+            <div id="altitude" class="value">0.0</div>
+            <div class="unit">m</div>
+          </div>
+
+          <div class="label">altitude</div>
         </div>
       </div>
     </div>
