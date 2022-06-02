@@ -114,6 +114,13 @@ function handleLocationChange(obj) {
     document.getElementById("altitude").innerText = obj.altitude["EGM96"] | 0;
   }
 
+  // RTIRL speed
+  // if (obj.speed) {
+  //   const speedInKph = (obj.speed * 3.6) | 0;
+  //   document.getElementById("speed").innerText =
+  //     speedInKph > 0 ? speedInKph : 0;
+  // }
+
   if (obj.location) {
     const { latitude, longitude } = obj.location;
     gps.new.time = obj.reportedAt;
@@ -136,13 +143,14 @@ function handleLocationChange(obj) {
 
       if (delta < 10) {
         // update variables
-        let _speed = (delta * 1000) / ((gps.new.time - gps.old.time) / 1000);
+        let _speed =
+          ((delta * 1000) / ((gps.new.time - gps.old.time) / 1000)) * 3.6;
         _speed = _speed < 70 ? _speed : 0.0;
         total += delta;
         today += delta;
 
         // update html
-        document.getElementById("speed").innerText = parseInt(_speed);
+        document.getElementById("speed").innerText = _speed | 0;
         document.getElementById("today").innerText = today.toFixed(1);
         document.getElementById("total").innerText = total.toFixed(1);
 
@@ -161,10 +169,6 @@ function handleLocationChange(obj) {
   }
 }
 
-function handleStuff(obj) {
-  console.log("obj", obj);
-}
-
 function addRTIRLListener(callback) {
   return app
     .database()
@@ -175,18 +179,6 @@ function addRTIRLListener(callback) {
       callback(snapshot.val());
     });
 }
-
-// function addListener(type, callback) {
-//   return app
-//     .database()
-//     .ref()
-//     .child("pullables")
-//     .child(pullKey)
-//     .child(type)
-//     .on("value", function (snapshot) {
-//       callback(snapshot.val());
-//     });
-// }
 
 async function start(obj) {
   totalApp = firebase.initializeApp(firebaseConfig);
