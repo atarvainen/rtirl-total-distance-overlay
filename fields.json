@@ -32,6 +32,11 @@
     "label": "Label for speed",
     "value": "speed"
   },
+  "altitudeLabel": {
+    "type": "text",
+    "label": "Label for altitude",
+    "value": "altitude"
+  },
   "fontName": {
     "type": "googleFont",
     "label": "Select a font:",
