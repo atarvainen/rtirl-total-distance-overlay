@@ -19,7 +19,9 @@ var today = 0.0;
 
 var speedTimeout;
 var speedTimeoutInMilliSeconds = 7000; // timeout to set speed to 0
-var rightNow = new Date();
+var rightNow = new Date(
+  new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" })
+);
 var currentDateId;
 var sameDayUntilHour = 4; // Change if you want to use the same day until for example 4am
 if (rightNow.getHours() < sameDayUntilHour) {
@@ -111,7 +113,7 @@ function handleLocationChange(obj) {
   clearTimeout(speedTimeout);
 
   if (obj.altitude) {
-    document.getElementById("altitude").innerText = obj.altitude["EGM96"] | 0;
+    document.getElementById("altitude").innerText = obj.altitude["WGS84"] | 0; //obj.altitude["EGM96"] | 0;
   }
 
   // RTIRL speed
@@ -123,6 +125,7 @@ function handleLocationChange(obj) {
 
   if (obj.location) {
     const { latitude, longitude } = obj.location;
+
     gps.new.time = obj.reportedAt;
     gps.new.latitude = latitude;
     gps.new.longitude = longitude;

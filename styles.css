@@ -1,7 +1,6 @@
 .container {
-  display: flex;
-  flex: 1;
-  background-color: #00000066;
+  display: inline-flex;
+  background-color: #00000080;
   font-family: "Roboto", sans-serif;
   padding: 16px;
 }
@@ -10,6 +9,10 @@
   width: 130px;
   display: flex;
   flex-direction: column;
+}
+
+.altitudemeter {
+  width: 70px;
 }
 
 .row {

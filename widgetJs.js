@@ -2,13 +2,18 @@
 const pullKey = "YOUR_PULL_KEY";
 // ! REPLACE WITH YOUR OWN FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "qwety",
+  apiKey: "qwerty",
   authDomain: "qwerty",
   projectId: "qwerty",
   storageBucket: "qwerty",
   messagingSenderId: "qwerty",
   appId: "qwerty",
 };
+
+// variables from streamelements settings
+var dateTimezone = "Asia/Tokyo",
+  altitudeMethod = "WGS84";
+// streamelements variables end
 
 var totalApp;
 var totaldb;
@@ -19,16 +24,12 @@ var today = 0.0;
 
 var speedTimeout;
 var speedTimeoutInMilliSeconds = 7000; // timeout to set speed to 0
-var rightNow = new Date();
+var rightNow;
 var currentDateId;
-var sameDayUntilHour = 4; // Change if you want to use the same day until for example 4am
-if (rightNow.getHours() < sameDayUntilHour) {
-  rightNow.setDate(rightNow.getDate() - 1);
-}
-currentDateId = `${rightNow.getFullYear()}_${rightNow.getMonth()}_${rightNow.getDate()}`;
+var sameDayUntilHour = 4;
 
 var gps = {
-  old: { time: rightNow.getTime(), latitude: 0.0, longitude: 0.0 },
+  old: { latitude: 0.0, longitude: 0.0 },
   new: { latitude: 0.0, longitude: 0.0 },
 };
 
@@ -111,7 +112,8 @@ function handleLocationChange(obj) {
   clearTimeout(speedTimeout);
 
   if (obj.altitude) {
-    document.getElementById("altitude").innerText = obj.altitude["EGM96"] | 0;
+    document.getElementById("altitude").innerText =
+      obj.altitude[altitudeMethod] | 0;
   }
 
   // RTIRL speed
@@ -142,10 +144,12 @@ function handleLocationChange(obj) {
       );
 
       if (delta < 10) {
-        // update variables
+        // calculate speed
         let _speed =
           ((delta * 1000) / ((gps.new.time - gps.old.time) / 1000)) * 3.6;
         _speed = _speed < 70 ? _speed : 0.0;
+
+        // update variables
         total += delta;
         today += delta;
 
@@ -181,6 +185,17 @@ function addRTIRLListener(callback) {
 }
 
 async function start(obj) {
+  const fieldData = obj.detail.fieldData;
+  dateTimezone = fieldData.dateTimezone || dateTimezone;
+
+  rightNow = new Date(
+    new Date().toLocaleString("en-US", { timeZone: dateTimezone })
+  );
+  if (rightNow.getHours() < sameDayUntilHour) {
+    rightNow.setDate(rightNow.getDate() - 1);
+  }
+  currentDateId = `${rightNow.getFullYear()}_${rightNow.getMonth()}_${rightNow.getDate()}`;
+
   totalApp = firebase.initializeApp(firebaseConfig);
   totaldb = firebase.firestore();
 
