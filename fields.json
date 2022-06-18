@@ -9,6 +9,21 @@
     "label": "Reset today",
     "value": "resetTodayButton"
   },
+  "useTotal": {
+    "type": "checkbox",
+    "label": "Display total meter",
+    "value": true
+  },
+  "useToday": {
+    "type": "checkbox",
+    "label": "Display today meter",
+    "value": true
+  },
+  "useAltitude": {
+    "type": "checkbox",
+    "label": "Display altitude meter",
+    "value": true
+  },
   "timezone": {
     "type": "dropdown",
     "label": "Timezone to use for daily values",

@@ -12,6 +12,7 @@
 }
 
 .altitudemeter {
+  display: none;
   width: {{altitudeWidth}}px;
 }
 
@@ -41,4 +42,12 @@
   font-weight: {{unitFontWeight}} !important;
   color: {{textColor}} !important;
   text-shadow: {{horizontalTextShadow}}px {{verticalTextShadow}}px {{textShadowColor}};
+}
+
+.total {
+  display: none;
+}
+
+.today {
+  display: none;
 }

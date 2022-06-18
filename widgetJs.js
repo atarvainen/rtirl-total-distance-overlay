@@ -11,8 +11,11 @@ const firebaseConfig = {
 };
 
 // variables from streamelements settings
-var dateTimezone = "Asia/Tokyo",
-  altitudeMethod = "WGS84";
+var dateTimezone = "Asia/Tokyo";
+var altitudeMethod = "WGS84";
+var useTotal = true;
+var useToday = true;
+var useAltitude = true;
 // streamelements variables end
 
 var totalApp;
@@ -66,26 +69,32 @@ async function resetToday() {
 }
 
 function updateDb(distance) {
-  var batch = totaldb.batch();
+  if (useToday || useTotal) {
+    var batch = totaldb.batch();
 
-  var todayRef = totaldb
-    .collection("distances")
-    .doc(pullKey + "_" + currentDateId);
-  batch.update(todayRef, {
-    date: firebase.firestore.Timestamp.fromDate(new Date()),
-    distance: firebase.firestore.FieldValue.increment(distance),
-  });
+    if (useToday) {
+      var todayRef = totaldb
+        .collection("distances")
+        .doc(pullKey + "_" + currentDateId);
+      batch.update(todayRef, {
+        date: firebase.firestore.Timestamp.fromDate(new Date()),
+        distance: firebase.firestore.FieldValue.increment(distance),
+      });
+    }
 
-  var totalRef = totaldb.collection("distances").doc(pullKey);
-  batch.update(totalRef, {
-    distance: firebase.firestore.FieldValue.increment(distance),
-  });
+    if (useTotal) {
+      var totalRef = totaldb.collection("distances").doc(pullKey);
+      batch.update(totalRef, {
+        distance: firebase.firestore.FieldValue.increment(distance),
+      });
+    }
 
-  // Commit the batch
-  batch
-    .commit()
-    .then(() => null)
-    .catch(() => null);
+    // Commit the batch
+    batch
+      .commit()
+      .then(() => null)
+      .catch(() => null);
+  }
 }
 
 function degreesToRadians(degrees) {
@@ -111,7 +120,7 @@ function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
 function handleLocationChange(obj) {
   clearTimeout(speedTimeout);
 
-  if (obj.altitude) {
+  if (useAltitude && obj.altitude) {
     document.getElementById("altitude").innerText =
       obj.altitude[altitudeMethod] | 0;
   }
@@ -147,7 +156,6 @@ function handleLocationChange(obj) {
         // calculate speed
         let _speed =
           ((delta * 1000) / ((gps.new.time - gps.old.time) / 1000)) * 3.6;
-        _speed = _speed < 70 ? _speed : 0.0;
 
         // update variables
         total += delta;
@@ -155,8 +163,12 @@ function handleLocationChange(obj) {
 
         // update html
         document.getElementById("speed").innerText = _speed | 0;
-        document.getElementById("today").innerText = today.toFixed(1);
-        document.getElementById("total").innerText = total.toFixed(1);
+        if (useToday) {
+          document.getElementById("today").innerText = today.toFixed(1);
+        }
+        if (useTotal) {
+          document.getElementById("total").innerText = total.toFixed(1);
+        }
 
         // update db
         updateDb(delta);
@@ -186,7 +198,10 @@ function addRTIRLListener(callback) {
 
 async function start(obj) {
   const fieldData = obj.detail.fieldData;
-  dateTimezone = fieldData.dateTimezone || dateTimezone;
+  dateTimezone = fieldData.dateTimezone ?? dateTimezone;
+  useTotal = fieldData.useTotal ?? useTotal;
+  useToday = fieldData.useToday ?? useToday;
+  useAltitude = fieldData.useAltitude ?? useAltitude;
 
   rightNow = new Date(
     new Date().toLocaleString("en-US", { timeZone: dateTimezone })
@@ -199,41 +214,49 @@ async function start(obj) {
   totalApp = firebase.initializeApp(firebaseConfig);
   totaldb = firebase.firestore();
 
-  // create objects if they don't exist
-  await setTodaysObj(true);
-  await setTotalObj(true);
-
-  // get total
-  await totaldb
-    .collection("distances")
-    .doc(pullKey)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const _distance = doc.data().distance;
-        if (_distance) {
-          total = _distance;
-          document.getElementById("total").innerText = total.toFixed(1);
+  if (useTotal) {
+    document.getElementById("totalMeter").style.display = "block";
+    await setTotalObj(true);
+    // get total
+    await totaldb
+      .collection("distances")
+      .doc(pullKey)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const _distance = doc.data().distance;
+          if (_distance) {
+            total = _distance;
+            document.getElementById("total").innerText = total.toFixed(1);
+          }
         }
-      }
-    })
-    .catch((error) => {});
+      })
+      .catch((error) => {});
+  }
 
-  // get daily
-  await totaldb
-    .collection("distances")
-    .doc(pullKey + "_" + currentDateId)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const _distance = doc.data().distance;
-        if (_distance) {
-          today = _distance;
-          document.getElementById("today").innerText = today.toFixed(1);
+  if (useToday) {
+    document.getElementById("todayMeter").style.display = "block";
+    await setTodaysObj(true);
+    // get daily
+    await totaldb
+      .collection("distances")
+      .doc(pullKey + "_" + currentDateId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const _distance = doc.data().distance;
+          if (_distance) {
+            today = _distance;
+            document.getElementById("today").innerText = today.toFixed(1);
+          }
         }
-      }
-    })
-    .catch((error) => {});
+      })
+      .catch((error) => {});
+  }
+
+  if (useAltitude) {
+    document.getElementById("altitudeMeter").style.display = "block";
+  }
 
   firebase.database.INTERNAL.forceWebSockets();
   app = firebase.initializeApp(
