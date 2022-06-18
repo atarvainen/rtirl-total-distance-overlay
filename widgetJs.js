@@ -199,9 +199,9 @@ function addRTIRLListener(callback) {
 async function start(obj) {
   const fieldData = obj.detail.fieldData;
   dateTimezone = fieldData.dateTimezone ?? dateTimezone;
-  useTotal = fieldData.useTotal ?? useTotal;
-  useToday = fieldData.useToday ?? useToday;
-  useAltitude = fieldData.useAltitude ?? useAltitude;
+  useTotal = fieldData.totalClass !== "hidden" ? true : false;
+  useToday = fieldData.todayClass !== "hidden" ? true : false;
+  useAltitude = fieldData.altitudeClass !== "hidden" ? true : false;
 
   rightNow = new Date(
     new Date().toLocaleString("en-US", { timeZone: dateTimezone })
@@ -215,7 +215,6 @@ async function start(obj) {
   totaldb = firebase.firestore();
 
   if (useTotal) {
-    document.getElementById("totalMeter").style.display = "block";
     await setTotalObj(true);
     // get total
     await totaldb
@@ -235,7 +234,6 @@ async function start(obj) {
   }
 
   if (useToday) {
-    document.getElementById("todayMeter").style.display = "block";
     await setTodaysObj(true);
     // get daily
     await totaldb
@@ -252,10 +250,6 @@ async function start(obj) {
         }
       })
       .catch((error) => {});
-  }
-
-  if (useAltitude) {
-    document.getElementById("altitudeMeter").style.display = "block";
   }
 
   firebase.database.INTERNAL.forceWebSockets();

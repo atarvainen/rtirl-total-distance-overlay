@@ -8,7 +8,7 @@
   <body>
     <div style="height: 200px">
       <div id="div1" class="container">
-        <div id="totalMeter" class="meter total">
+        <div id="totalMeter" class="{{totalClass}}">
           <div class="row">
             <div id="total" class="value">0.0</div>
             <div class="unit">km</div>
@@ -16,7 +16,7 @@
           <div class="label">{{totalLabel}}</div>
         </div>
 
-        <div id="todayMeter" class="meter today">
+        <div id="todayMeter" class="{{todayClass}}">
           <div class="row">
             <div id="today" class="value">0.0</div>
             <div class="unit">km</div>
@@ -34,7 +34,7 @@
           <div class="label">{{speedLabel}}</div>
         </div>
 
-        <div id="altitudeMeter" class="meter altitudemeter">
+        <div id="altitudeMeter" class="meter {{altitudeClass}}">
           <div class="row">
             <div id="altitude" class="value">0</div>
             <div class="unit">m</div>

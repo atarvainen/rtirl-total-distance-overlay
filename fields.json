@@ -9,20 +9,32 @@
     "label": "Reset today",
     "value": "resetTodayButton"
   },
-  "useTotal": {
-    "type": "checkbox",
-    "label": "Display total meter",
-    "value": true
+  "totalClass": {
+    "type": "dropdown",
+    "label": "Total meter visibility",
+    "value": "meter",
+    "options": {
+      "hidden": "hidden",
+      "meter": "visible"
+    }
   },
-  "useToday": {
-    "type": "checkbox",
-    "label": "Display today meter",
-    "value": true
+  "todayClass": {
+    "type": "dropdown",
+    "label": "Today meter visibility",
+    "value": "meter",
+    "options": {
+      "hidden": "hidden",
+      "meter": "visible"
+    }
   },
-  "useAltitude": {
-    "type": "checkbox",
-    "label": "Display altitude meter",
-    "value": true
+  "altitudeClass": {
+    "type": "dropdown",
+    "label": "Altitude meter visibility",
+    "value": "altitudeMeter",
+    "options": {
+      "hidden": "hidden",
+      "altitudeMeter": "visible"
+    }
   },
   "timezone": {
     "type": "dropdown",
